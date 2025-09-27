@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #333;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        /* Sections */
+        .section {
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        #home {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Pricing Table */
+        .pricing-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .pricing-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            width: 250px;
+            text-align: center;
+        }
+
+        .pricing-card.popular {
+            border: 2px solid #3498db;
+        }
+
+        /* Projects Grid */
+        #projects {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .project-card {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        /* Form Styling */
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        /* Product Card */
+        .product-card {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        /* Animated Button */
+        .animated-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .animated-btn:hover {
+            background-color: #2980b9;
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icon {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .social-icon img {
+            width: 30px;
+            height: 30px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar, .pricing-container, #projects, .social-icons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .pricing-container, #projects {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div>Portfolio</div>
+        <div>
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#projects">Projects</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <section id="home" class="section">
+        <div>
+            <h1>Welcome to My Portfolio</h1>
+            <p>Web Developer & Designer</p>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <h2>About Me</h2>
+        <p>Professional web developer with expertise in modern web technologies.</p>
+    </section>
+
+    <section id="projects" class="section">
+        <div class="project-card">Project 1</div>
+        <div class="project-card">Project 2</div>
+        <div class="project-card">Project 3</div>
+    </section>
+
+    <section id="pricing" class="section">
+        <div class="pricing-container">
+            <div class="pricing-card">
+                <h3>Basic</h3>
+                <p>$9.99/month</p>
+                <button>Choose Plan</button>
+            </div>
+            <div class="pricing-card popular">
+                <h3>Pro</h3>
+                <p>$19.99/month</p>
+                <button>Choose Plan</button>
+            </div>
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <p>$29.99/month</p>
+                <button>Choose Plan</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section">
+        <h2>Contact Me</h2>
+        <form class="contact-form">
+            <input type="text" placeholder="Name" required>
+            <input type="email" placeholder="Email" required>
+            <textarea placeholder="Message" required></textarea>
+            <button type="submit" class="animated-btn">Send</button>
+        </form>
+    </section>
+
+    <section id="products" class="section">
+        <div class="product-card">
+            <img src="/api/placeholder/200/200" alt="Product">
+            <h3>Product Name</h3>
+            <p>$49.99</p>
+            <button class="animated-btn">Buy Now</button>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div>&copy; 2024 My Portfolio</div>
+        <div class="social-icons">
+            <a href="#" class="social-icon">
+                <img src="/api/placeholder/30/30" alt="Facebook">
+                Facebook
+            </a>
+            <a href="#" class="social-icon">
+                <img src="/api/placeholder/30/30" alt="Twitter">
+                Twitter
+            </a>
+            <a href="#" class="social-icon">
+                <img src="/api/placeholder/30/30" alt="LinkedIn">
+                LinkedIn
+            </a>
+            <a href="#" class="social-icon">
+                <img src="/api/placeholder/30/30" alt="Instagram">
+                Instagram
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

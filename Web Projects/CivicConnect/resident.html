@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicConnect - Resident Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #34495e;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .sidebar-logo span {
+            margin-left: 10px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #34495e;
+            margin-bottom: 15px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3498db;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .user-name {
+            font-weight: 500;
+        }
+        
+        .user-status {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu-item {
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .sidebar-menu-item.active {
+            background-color: #34495e;
+            border-left: 4px solid #3498db;
+        }
+        
+        .sidebar-menu-item:hover:not(.active) {
+            background-color: rgba(52, 73, 94, 0.5);
+        }
+        
+        .sidebar-menu-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #ecf0f1;
+            color: #34495e;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #bdc3c7;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        /* Map Section */
+        .map-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+        }
+        
+        .map-container {
+            height: 400px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .map-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-chip {
+            padding: 5px 15px;
+            background-color: #f5f7fa;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #34495e;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-chip:hover {
+            background-color: #e0e6ed;
+        }
+        
+        .filter-chip.active {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        /* Recent Reports Section */
+        .reports-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .report-list {
+            list-style: none;
+        }
+        
+        .report-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #ecf0f1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .report-item:last-child {
+            border-bottom: none;
+        }
+        
+        .report-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+        }
+        
+        .report-content {
+            flex: 1;
+        }
+        
+        .report-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .report-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .report-status {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background-color: #ffeaa7;
+            color: #d35400;
+        }
+        
+        .status-inprogress {
+            background-color: #a0e7e5;
+            color: #147d78;
+        }
+        
+        .status-resolved {
+            background-color: #badc58;
+            color: #6ab04c;
+        }
+        
+        /* Badges Section */
+        .badges-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 20px;
+        }
+        
+        .badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .badge-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .badge-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .badge-description {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                overflow: visible;
+            }
+            
+            .sidebar-logo span, .user-name, .user-status, .sidebar-menu-item span {
+                display: none;
+            }
+            
+            .user-avatar {
+                margin-right: 0;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <span>🏙️ CivicConnect</span>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">JS</div>
+                <div>
+                    <div class="user-name">John Smith</div>
+                    <div class="user-status">Resident</div>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-menu-item active">
+                    <i>📊</i>
+                    <span>Dashboard</span>
+                </li>
+                <li class="sidebar-menu-item">
+                    <i>📍</i>
+                    <span>Report Issue</span>
+                </li>
+                <li class="sidebar-menu-item">
+                    <i>🗂️</i>
+                    <span>My Reports</span>
+                </li>
+                <li class="sidebar-menu-item">
+                    <i>🏆</i>
+                    <span>Rewards</span>
+                </li>
+                <li class="sidebar-menu-item">
+                    <i>👥</i>
+                    <span>Community</span>
+                </li>
+                <li class="sidebar-menu-item">
+                    <i>📢</i>
+                    <span>Announcements</span>
+                </li>
+                <li class="sidebar-menu-item">
+                    <i>⚙️</i>
+                    <span>Settings</span>
+                </li>
+                <li class="sidebar-menu-item">
+                    <i>❓</i>
+                    <span>Help & Support</span>
+                </li>
+                <li class="sidebar-menu-item">
+                    <i>🚪</i>
+                    <span>Logout</span>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary">Notifications</button>
+                    <button class="btn btn-primary">Report New Issue</button>
+                </div>
+            </div>
+            
+            <!-- Dashboard Stats -->
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">My Reports</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Resolved Issues</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">750</div>
+                    <div class="stat-label">Community Points</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Badges Earned</div>
+                </div>
+            </div>
+            
+            <!-- Map Section -->
+            <div class="map-section">
+                <div class="section-header">
+                    <h2 class="section-title">Neighborhood Issues Map</h2>
+                    <div>
+                        <button class="btn btn-secondary">View Fullscreen</button>
+                    </div>
+                </div>
+                <div class="map-container">
+                    <div>Interactive Map Placeholder</div>
+                </div>
+                <div class="map-filters">
+                    <div class="filter-chip active">All</div>
+                    <div class="filter-chip">Roads</div>
+                    <div class="filter-chip">Waste</div>
+                    <div class="filter-chip">Electricity</div>
+                    <div class="filter-chip">Water</div>
+                    <div class="filter-chip">Safety</div>
+                    <div class="filter-chip">Parks</div>
+                    <div class="filter-chip">My Reports</div>
+                </div>
+            </div>
+            
+            <!-- Recent Reports -->
+            <div class="reports-section">
+                <div class="section-header">
+                    <h2 class="section-title">My Recent Reports</h2>
+                    <div>
+                        <button class="btn btn-secondary">View All</button>
+                    </div>
+                </div>
+                <ul class="report-list">
+                    <li class="report-item">
+                        <div class="report-icon">🚧</div>
+                        <div class="report-content">
+                            <div class="report-title">Large pothole on Oak Street</div>
+                            <div class="report-meta">
+                                <span>Mar 05, 2025</span>
+                                <span>Oak Street & 5th Ave</span>
+                                <span>Roads</span>
+                            </div>
+                        </div>
+                        <div class="report-status status-inprogress">In Progress</div>
+                    </li>
+                    <li class="report-item">
+                        <div class="report-icon">💡</div>
+                        <div class="report-content">
+                            <div class="report-title">Streetlight outage near park entrance</div>
+                            <div class="report-meta">
+                                <span>Feb 28, 2025</span>
+                                <span>Central Park West Entrance</span>
+                                <span>Electricity</span>
+                            </div>
+                        </div>
+                        <div class="report-status status-resolved">Resolved</div>
+                    </li>
+                    <li class="report-item">
+                        <div class="report-icon">🗑️</div>
+                        <div class="report-content">
+                            <div class="report-title">Overflowing trash bin</div>
+                            <div class="report-meta">
+                                <span>Feb 22, 2025</span>
+                                <span>Main Street & Park Avenue</span>
+                                <span>Waste</span>
+                            </div>
+                        </div>
+                        <div class="report-status status-resolved">Resolved</div>
+                    </li>
+                    <li class="report-item">
+                        <div class="report-icon">⚠️</div>
+                        <div class="report-content">
+                            <div class="report-title">Fallen tree blocking sidewalk</div>
+                            <div class="report-meta">
+                                <span>Feb 15, 2025</span>
+                                <span>Elm Street</span>
+                                <span>Safety</span>
+                            </div>
+                        </div>
+                        <div class="report-status status-resolved">Resolved</div>
+                    </li>
+                    <li class="report-item">
+                        <div class="report-icon">🚫</div>
+                        <div class="report-content">
+                            <div class="report-title">Graffiti on community center wall</div>
+                            <div class="report-meta">
+                                <span>Feb 10, 2025</span>
+                                <span>Community Center, 7th Street</span>
+                                <span>Public Property</span>
+                            </div>
+                        </div>
+                        <div class="report-status status-pending">Pending</div>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Badges Section -->
+            <div class="badges-section">
+                <div class="section-header">
+                    <h2 class="section-title">My Badges</h2>
+                    <div>
+                        <button class="btn btn-secondary">View All</button>
+                    </div>
+                </div>
+                <div class="badges-grid">
+                    <div class="badge">
+                        <div class="badge-icon">🔍</div>
+                        <div class="badge-name">Issue Spotter</div>
+                        <div class="badge-description">Reported first issue</div>
+                    </div>
+                    <div class="badge">
+                        <div class="badge-icon">👁️</div>
+                        <div class="badge-name">Watchful Eye</div>
+                        <div class="badge-description">Reported 5 issues</div>
+                    </div>
+                    <div class="badge">
+                        <div class="badge-icon">🌟</div>
+                        <div class="badge-name">Quality Reporter</div>
+                        <div class="badge-description">5 verified reports</div>
+                    </div>
+                    <div class="badge">
+                        <div class="badge-icon">📸</div>
+                        <div class="badge-name">Photographer</div>
+                        <div class="badge-description">Added photos to reports</div>
+                    </div>
+                    <div class="badge">
+                        <div class="badge-icon">📢</div>
+                        <div class="badge-name">Advocate</div>
+                        <div class="badge-description">Supported 10+ issues</div>
+                    </div>
+                    <div class="badge">
+                        <div class="badge-icon">🧹</div>
+                        <div class="badge-name">Clean-Up Volunteer</div>
+                        <div class="badge-description">Participated in community clean-up</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
